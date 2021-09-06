@@ -11,9 +11,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                // "/"api 요청은 모두 허용하고 나머지는 deny
+                // "/a"api 요청은 모두 허용하고 나머지는 인증요구
                 .authorizeRequests()
-                    .antMatchers("/").permitAll()
+                    .antMatchers("/a").permitAll()
+                    .anyRequest().authenticated()
                     .and()
                 // 로그인 페이지는 모두 허용
                 .formLogin()

@@ -23,6 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // "/a"api 요청은 모두 허용하고 나머지는 인증요구
                 .authorizeRequests()
                     .antMatchers("/a").permitAll()
+                    .antMatchers("/signup").permitAll()
                     .anyRequest().authenticated()
                     .and()
                 // 로그인 페이지는 모두 허용

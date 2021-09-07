@@ -1,6 +1,7 @@
 package com.sungwook.springbootsecuritydemo.domain;
 
 import lombok.Builder;
+import lombok.Getter;
 
 import javax.persistence.*;
 
@@ -9,6 +10,7 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
     private Long id;
 
     private String username;

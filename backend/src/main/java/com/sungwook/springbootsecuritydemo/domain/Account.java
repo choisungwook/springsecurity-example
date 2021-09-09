@@ -19,11 +19,15 @@ public class Account {
 
     private String email;
 
+    @Enumerated(value = EnumType.STRING)
+    private AccountRole role;
+
     @Builder
-    public Account(Long id, String username, String password, String email) {
+    public Account(Long id, String username, String password, String email, AccountRole role) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
+        this.role = role;
     }
 }

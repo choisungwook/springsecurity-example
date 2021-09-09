@@ -1,4 +1,4 @@
-package com.sungwook.springbootsecuritydemo;
+package com.sungwook.springbootsecuritydemo.service;
 
 import com.sungwook.springbootsecuritydemo.domain.Account;
 import com.sungwook.springbootsecuritydemo.domain.dto.CreateAccountRequestDto;

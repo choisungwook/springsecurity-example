@@ -1,5 +1,6 @@
-package com.sungwook.springbootsecuritydemo;
+package com.sungwook.springbootsecuritydemo.controller;
 
+import com.sungwook.springbootsecuritydemo.service.UserService;
 import com.sungwook.springbootsecuritydemo.domain.dto.CreateAccountRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

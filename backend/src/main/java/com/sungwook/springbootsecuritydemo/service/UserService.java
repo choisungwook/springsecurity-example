@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
 
@@ -20,6 +22,12 @@ public class UserService {
 
     @Transactional
     public Long CreateUser(CreateAccountRequestDto request_body){
+        Optional<Account> find_user = userRepository.findByUsername(request_body.getUsername());
+
+        if(find_user.isPresent()){
+            throw new IllegalStateException("이미 사용자가 존재합니다");
+        }
+
         // default: 일방사용자 role적용
         Account new_user = Account.builder()
                 .username(request_body.getUsername())

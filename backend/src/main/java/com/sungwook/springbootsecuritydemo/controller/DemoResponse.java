@@ -1,4 +1,4 @@
-package com.sungwook.springbootsecuritydemo;
+package com.sungwook.springbootsecuritydemo.controller;
 
 import lombok.Builder;
 import lombok.Getter;

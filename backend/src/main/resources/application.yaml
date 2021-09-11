@@ -12,3 +12,9 @@ spring:
   h2:
     console:
       enabled: true
+
+logging:
+  level:
+    com:
+      sungwook:
+        springbootsecuritydemo: debug

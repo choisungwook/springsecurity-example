@@ -25,7 +25,7 @@ public class UserService {
                 .username(request_body.getUsername())
                 .email(request_body.getEmail())
                 .password(passwordEncoder.encode(request_body.getPassword()))
-                .role(AccountRole.USER)
+                .role(AccountRole.ROLE_USER)
                 .build();
 
         return userRepository.save(new_user).getId();

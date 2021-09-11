@@ -3,6 +3,7 @@ package com.sungwook.springbootsecuritydemo.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,11 +22,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                // "/a"api 요청은 모두 허용하고 나머지는 인증요구
                 .authorizeRequests()
-                    .antMatchers("/a").permitAll()
                     .antMatchers("/h2-console/**").permitAll()
                     .antMatchers(HttpMethod.POST,"/signup").permitAll()
+                    .antMatchers("/access_any").permitAll()
                     .anyRequest().authenticated()
                     .and()
                 .headers()
@@ -41,5 +41,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .and()
                 .csrf().disable();
 
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 }

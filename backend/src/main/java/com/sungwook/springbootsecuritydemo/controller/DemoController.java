@@ -1,5 +1,6 @@
 package com.sungwook.springbootsecuritydemo.controller;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,13 +12,17 @@ public class DemoController {
         return "hello world";
     }
 
-    @GetMapping("/a")
-    public String a(){
-        return "hello world";
+    @GetMapping("/access_any")
+    public DemoResponse access_any(){
+        return DemoResponse.builder()
+                .auth(SecurityContextHolder.getContext().getAuthentication())
+                .build();
     }
 
-    @GetMapping("/b")
-    public String b (){
-        return "hello world";
+    @GetMapping("/access_login_required")
+    public DemoResponse access_login_required (){
+        return DemoResponse.builder()
+                .auth(SecurityContextHolder.getContext().getAuthentication())
+                .build();
     }
 }

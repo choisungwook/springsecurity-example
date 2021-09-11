@@ -1,5 +1,7 @@
 package com.sungwook.springbootsecuritydemo.config;
 
+import com.sungwook.springbootsecuritydemo.service.CustomUserDetailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    private CustomUserDetailService customUserDetailService;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -41,5 +45,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .and()
                 .csrf().disable();
 
+    }
+
+    /***
+     * 사용자가 정의한 userdetailservice를 이용하도록 설정한다.
+     * @param auth
+     * @throws Exception
+     */
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(customUserDetailService);
     }
 }

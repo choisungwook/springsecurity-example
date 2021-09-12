@@ -10,8 +10,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -26,28 +28,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        JwtFilter jwtFilter = new JwtFilter(authenticationManagerBean());
+        jwtFilter.setFilterProcessesUrl("/api/auth/login");
+
         http
                 .authorizeRequests()
+                    .antMatchers("/api/auth/login/**").permitAll()
+                    .antMatchers("/logout*/**").permitAll()
                     .antMatchers("/h2-console/**").permitAll()
                     .antMatchers(HttpMethod.POST,"/signup").permitAll()
                     .antMatchers("/access_any").permitAll()
                     .anyRequest().authenticated()
                     .and()
+                .logout()
+                    .logoutUrl("/logout")
+                    .and()
                 .headers()
                     .frameOptions().disable()
                     .and()
-                // 로그인 페이지는 모두 허용
-                .formLogin()
-                    .permitAll()
-                    .and()
-                //  로그아웃 페이지는 모두 허용
-                .logout()
-                    .permitAll()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                 .csrf().disable()
-                .addFilter(new JwtFilter(authenticationManagerBean()));
-
-
+//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilter(jwtFilter);
     }
 
     /***

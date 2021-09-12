@@ -4,13 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sungwook.springbootsecuritydemo.domain.dto.LoginRequestDto;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -36,10 +35,13 @@ public class JwtFilter extends UsernamePasswordAuthenticationFilter {
     @SneakyThrows
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        LoginRequestDto loginRequestDto = objectMapper.readValue(request.getInputStream(), LoginRequestDto.class);
+
         // step1. 토큰생성
         UsernamePasswordAuthenticationToken authentication_token = new UsernamePasswordAuthenticationToken(
-                request.getParameter("username"),
-                request.getParameter("password")
+                loginRequestDto.getUsername(),
+                loginRequestDto.getPassword()
         );
 
         // step2. 인증위임
@@ -58,6 +60,18 @@ public class JwtFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.debug("인증 성공");
+        User user = (User)authResult.getPrincipal();
+
+        // step1. jwt토큰 생성
+        JwtUtils jwtUtils = new JwtUtils();
+        String jwt_token = jwtUtils.generate(
+                user.getUsername(),
+                user.getAuthorities()
+        );
+        log.debug("generate token: " + jwt_token);
+
+        // step2. header에 추가
+        response.addHeader("Authentication", "Bearer " + jwt_token);
         super.successfulAuthentication(request, response, chain, authResult);
     }
 
@@ -72,6 +86,7 @@ public class JwtFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         log.debug("인증 실패");
+        log.debug(failed.toString());
         super.unsuccessfulAuthentication(request, response, failed);
     }
 }
